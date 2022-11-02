@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // ℹ️ Handles password encryption
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 // ℹ️ Handles password encryption
 const jwt = require("jsonwebtoken");
@@ -106,7 +106,7 @@ router.post("/login", (req, res, next) => {
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
           algorithm: "HS256",
-          expiresIn: "6h",
+          expiresIn: "24h",
         });
 
         // Send the token as the response

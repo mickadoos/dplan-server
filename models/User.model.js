@@ -49,7 +49,7 @@ const userSchema = new Schema(
     friendsToAccept: [{type: Schema.Types.ObjectId, ref: "User"}],
 
     //Plans
-    plans: [{type: Schema.Types.ObjectId, ref: "Plan", status: {enum: ["confirmed", "declined", "pending", "admin"]}}]
+    plans: [{type: Schema.Types.ObjectId, ref: "Plan", status: {enum: ["confirmed", "declined", "pending", "admin", "test"]}}]
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

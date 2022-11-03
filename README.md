@@ -133,6 +133,9 @@ const planSchema = new Schema(
 |PUT|	/plan/:planId/edit	|	json({authToken: authToken})||	Edits the current editing plan and returns the current plan id.|
 |DELETE	|/plan/:planId	|	json({authToken: authToken})||	Deletes the current plan and returns “ok”|
 |GET|	/plan/:planId/attendees	|	json({authToken: authToken})||	Returns all the users contained in attendees array of the corrent plan.|
+|GET	| /username 	|	json({authToken: authToken})||	Returns the current user information from the data base.|
+|PUT	| /:username /edit	|	json({authToken: authToken})||	Edits the current user information.|
+|GET	| /:username/friends	|	json({authToken: authToken})||	Returns the users of the friends array of the corrent user.|
 
 
 Welcome to the Olympus.

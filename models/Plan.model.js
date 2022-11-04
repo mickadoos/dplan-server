@@ -30,7 +30,9 @@ const planSchema = new Schema(
     tags: [{type: String}],
 
     // Arrays Party Fiesta
-    attendees: [{type: Schema.Types.ObjectId, ref: "User"}]
+    invited: [[{type: Schema.Types.ObjectId, ref: "User"}]],
+    accepted: [[{type: Schema.Types.ObjectId, ref: "User"}]],
+    denied: [[{type: Schema.Types.ObjectId, ref: "User"}]],
 
   },
   {

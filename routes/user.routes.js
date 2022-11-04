@@ -2,7 +2,17 @@ const express = require("express");
 const User = require("../models/User.model");
 const router = express.Router();
 
-// Profile Page --> /:username/
+// User plans Page --> /:username
+router.get("/", (req, res, next) => {
+  User.findOne({"username":req.params.username})
+  .populate ("plans")
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => res.json(error));
+});
+
+// Profile Page --> /:username/profile
 router.get("/profile", (req, res, next) => {
     User.findOne({"username":req.params.username})
     .populate ("friendsToAccept")

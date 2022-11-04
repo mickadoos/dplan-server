@@ -16,23 +16,23 @@ const userSchema = new Schema(
     },
     name: {
       type: String,
-      required: [true, "Name is required."],
+      // required: [true, "Name is required."],
     },
     username: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
       trim: true,
     },
     birthdate: {
-      type: String,
+      type: Date,
     },
     gender: {
-      enum: ["male", "female", "other"],
+      type: String,
+      enum: ["male", "female", "other"]
     },
     profileImage: {
       type: String,
-      default: "https://picsum.photos/300",
     },
     phoneNumber: {
       type: String,

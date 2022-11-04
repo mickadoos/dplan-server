@@ -25,8 +25,7 @@ const userSchema = new Schema(
       trim: true
     },
     birthdate: {
-      type: String,
-      default: new Date().toDateString(),
+      type: Date,
     },
     gender: {
       type: String,
@@ -34,7 +33,6 @@ const userSchema = new Schema(
     },
     profileImage: {
       type: String,
-      default: "https://picsum.photos/300"
     },
     phoneNumber: {
       type: String

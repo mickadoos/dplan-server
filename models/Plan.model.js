@@ -33,7 +33,6 @@ const planSchema = new Schema(
     invited: [[{type: Schema.Types.ObjectId, ref: "User"}]],
     accepted: [[{type: Schema.Types.ObjectId, ref: "User"}]],
     denied: [[{type: Schema.Types.ObjectId, ref: "User"}]]
-
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

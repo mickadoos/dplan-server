@@ -8,20 +8,29 @@ router.get("/", (req, res, next) => {
 });
 
 // Create new plan --> /api/plans/:username/newPlan
-router.post("/newPlan", (req, res, next) => {
+router.post("/:username/newPlan", (req, res, next) => {
   let username = req.params.username
   const { title, description, image, date, time, location, tags } = req.body;
-  const promNewPlan = Plan.create(req.body)
   const promUser = User.findOne({"username" : username})
-  Promise.all({promNewPlan, promUser})
+  const promNewPlan = Plan.create(req.body)
+  console.log("username: ", username)
+  Promise.all([promNewPlan, promUser])
   .then(resp => {
-    resp[1].plans.push({"_id": resp[0]._id, "status": "admin"})
+    console.log("resp ", resp)
+    console.log("newplan ID: ", resp[0]._id.toString().trim())
+    resp[1].plans.push({"_id": resp[0]._id.toString(), "status":"admin"})
     User.findByIdAndUpdate(resp[1]._id, resp[1], {new: true})
     .then(resp => {
-      res.json("New plan created succesfully: ",resp)
+      console.log("Then dins del promise: ", resp)
+      res.json(resp)
     })
+    .catch((error) => {
+      console.log("Catch newPlan dins promise: ", error)
+      res.json(error)});
   })
-  res.json(req.body);
+  .catch((error) => {
+    console.log("err catch promise: ", error)
+    res.json(error)})
 });
 
 // Plan Page --> /api/plans/:planId

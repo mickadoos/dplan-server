@@ -22,34 +22,42 @@ const userSchema = new Schema(
       type: String,
       // required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     birthdate: {
       type: Date,
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"]
+      enum: ["male", "female", "other"],
     },
     profileImage: {
       type: String,
     },
     phoneNumber: {
-      type: String
+      type: String,
     },
     country: {
-      type: String
+      type: String,
     },
 
     // Arrays Party Fiesta
 
     //Friends
-    friends: [{type: Schema.Types.ObjectId, ref: "User"}],
-    friendsRequested: [{type: Schema.Types.ObjectId, ref: "User"}],
-    friendsToAccept: [{type: Schema.Types.ObjectId, ref: "User"}],
+    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendsRequested: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendsToAccept: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
     //Plans
-    plans: [{type: Schema.Types.ObjectId, ref: "Plan", status: {enum: ["confirmed", "declined", "pending", "admin"]}}]
+    plans: [
+      {
+        _id: { type: Schema.Types.ObjectId, ref: "Plan" },
+        status: {
+          type: String,
+          enum: ["confirmed", "declined", "pending", "admin"],
+        }
+      }
+    ],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

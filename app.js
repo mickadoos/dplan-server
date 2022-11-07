@@ -19,10 +19,10 @@ const indexRoutes = require("./routes/index.routes");
 app.use("/api", indexRoutes);
 
 const authRoutes = require("./routes/auth.routes");
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 const userRoutes = require("./routes/user.routes");
-app.use("/api/users/:username", userRoutes);
+app.use("/api/users", userRoutes);
 
 const planRoutes = require("./routes/plans.routes");
 app.use("/api/plans", planRoutes);

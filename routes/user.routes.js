@@ -61,7 +61,12 @@ router.get("/:username/friends", (req, res, next) => {
       const alreadyFriends = [resp[0]._id, ...resp[0].friends, ...resp[0].friendsRequested, ...resp[0].friendsToAccept] //array de IDs
       User.find({_id: {"$nin": alreadyFriends}})
       .then(resp =>{
-        res.json(resp);
+        if( resp.length === 0){
+          const resp0 = []
+          res.json(resp0);
+        }
+        else {res.json(resp)}
+        
       })
       .catch((error) => res.json(error));
     }) 

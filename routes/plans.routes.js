@@ -3,17 +3,21 @@ const User = require("../models/User.model");
 const Plan = require("../models/Plan.model");
 const router = express.Router();
 
+// ********* require fileUploader in order to use it *********
+const fileUploader = require('../config/cloudinary.config');
+
 router.get("/", (req, res, next) => {
   res.json("All good in here");
 });
 
 // Create new plan --> /api/plans/:username/newPlan
-router.post("/:username/newPlan", (req, res, next) => {
+router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, next) => {
   let username = req.params.username
-  const { title, description, image, date, time, location, tags } = req.body;
+  // const { title, description, image, date, time, location, tags } = req.body;
+  const { title, description, planImage, date, time, location } = req.body;
+  console.log('req.BODY---------', req.body)
+  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location})
   const promUser = User.findOne({"username" : username})
-  const promNewPlan = Plan.create(req.body)
-  console.log("username: ", username)
   Promise.all([promNewPlan, promUser])
   .then(resp => {
     console.log("resp ", resp)
@@ -21,16 +25,13 @@ router.post("/:username/newPlan", (req, res, next) => {
     resp[1].plans.push({"_id": resp[0]._id.toString(), "status":"admin"})
     User.findByIdAndUpdate(resp[1]._id, resp[1], {new: true})
     .then(resp => {
-      console.log("Then dins del promise: ", resp)
       res.json(resp)
     })
     .catch((error) => {
       console.log("Catch newPlan dins promise: ", error)
       res.json(error)});
   })
-  .catch((error) => {
-    console.log("err catch promise: ", error)
-    res.json(error)})
+  // res.json(req.body);
 });
 
 // Plan Page --> /api/plans/:planId

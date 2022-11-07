@@ -58,7 +58,7 @@ router.get("/:username/friends", (req, res, next) => {
     const promPersons = User.find()
     Promise.all([promUser, promPersons])
     .then(resp => {
-      const alreadyFriends = [...resp[0].friends, ...resp[0].friendsRequested, ...resp[0].friendsToAccept] //array de IDs
+      const alreadyFriends = [resp[0]._id, ...resp[0].friends, ...resp[0].friendsRequested, ...resp[0].friendsToAccept] //array de IDs
       User.find({_id: {"$nin": alreadyFriends}})
       .then(resp =>{
         res.json(resp);

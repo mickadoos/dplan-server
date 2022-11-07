@@ -29,7 +29,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"]
+      enum: ["male", "female", "other"],
     },
     profileImage: {
       type: String,
@@ -51,10 +51,12 @@ const userSchema = new Schema(
     //Plans
     plans: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Plan",
-        status: { enum: ["confirmed", "declined", "pending", "admin"] },
-      },
+        _id: { type: Schema.Types.ObjectId, ref: "Plan" },
+        status: {
+          type: String,
+          enum: ["confirmed", "declined", "pending", "admin"],
+        }
+      }
     ],
   },
   {

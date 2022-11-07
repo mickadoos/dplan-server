@@ -3,7 +3,7 @@ const User = require("../models/User.model");
 const router = express.Router();
 
 // User plans Page --> /:username
-router.get("/", (req, res, next) => {
+router.get("/:username", (req, res, next) => {
   User.findOne({"username":req.params.username})
   .populate ("plans")
     .then((result) => {
@@ -13,7 +13,7 @@ router.get("/", (req, res, next) => {
 });
 
 // Profile Page --> /:username/profile
-router.get("/profile", (req, res, next) => {
+router.get("/:username/profile", (req, res, next) => {
     User.findOne({"username":req.params.username})
     .populate ("friendsToAccept")
       .then((result) => {
@@ -23,7 +23,7 @@ router.get("/profile", (req, res, next) => {
   });
 
 // Profile Page, edit --> /:username/edit
-router.put("/edit", (req, res, next) => {
+router.put("/:username/edit", (req, res, next) => {
     const { profileImage, name, username, description, birthdate, mail, phoneNumber } = req.body;
     const updatedProfile = {
         profileImage: req.body.profileImage,
@@ -42,7 +42,7 @@ router.put("/edit", (req, res, next) => {
   });
 
  // Profile Page, friends --> /:username/friends
-router.get("/friends", (req, res, next) => {
+router.get("/:username/friends", (req, res, next) => {
     User.findOne({"username":req.params.username})
     .populate("friends")
       .then((result) => {
@@ -52,7 +52,7 @@ router.get("/friends", (req, res, next) => {
   }); 
 
  // All users using DPlan --> /:username/addFriends
- router.get("/addFriends", (req, res, next) => {
+ router.get("/:username/addFriends", (req, res, next) => {
     User.find()
     .then((result) => {
         const res = result.filter(user => {
@@ -73,7 +73,7 @@ router.get("/friends", (req, res, next) => {
   }); 
 
 // Profile Page, edit --> /:username/friendRequest/:idPerson
-router.post("/friendRequest/:idPerson", (req, res, next) => {
+router.post("/:username/friendRequest/:idPerson", (req, res, next) => {
     const username = req.params.username
     const idPerson = req.params.idPerson
 
@@ -110,7 +110,7 @@ router.post("/friendRequest/:idPerson", (req, res, next) => {
   
 
  // Accept friend --> /:username/acceptFriend/:idPerson
-router.post("/acceptFriend/:idPerson", (req, res, next) => {
+router.post("/:username/acceptFriend/:idPerson", (req, res, next) => {
   const username = req.params.username
   const idPerson = req.params.idPerson
   const promUser = User.findOne({"username": username})
@@ -156,7 +156,7 @@ router.post("/acceptFriend/:idPerson", (req, res, next) => {
 
 
  // Decline friend --> /:username/declineFriend/:idPerson
- router.post("/declineFriend/:idPerson", (req, res, next) => {
+ router.post("/:username/declineFriend/:idPerson", (req, res, next) => {
   const username = req.params.username
   const idPerson = req.params.idPerson
   const promUser = User.findOne({"username": username})

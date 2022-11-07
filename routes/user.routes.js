@@ -47,6 +47,7 @@ router.get("/:username/friends", (req, res, next) => {
     User.findOne({"username":req.params.username})
     .populate("friends")
       .then((result) => {
+        console.log("FRIENDS: ",result)
         res.json(result);
       })
       .catch((error) => res.json(error));

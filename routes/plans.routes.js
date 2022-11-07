@@ -36,7 +36,7 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
 
 // Plan Page --> /api/plans/:planId
 router.get("/:planId", (req, res, next) => {
-  Plan.findOne(req.params.planId)
+  Plan.findOne({"_id": req.params.planId})
     .then((result) => {
       res.json(result);
     })
@@ -45,9 +45,14 @@ router.get("/:planId", (req, res, next) => {
 
 // Plan Edit --> /api/plans/:planId
 router.put("/:planId", (req, res, next) => {
-  const { title, description, image, date, time, location, tags } = req.body;
-  Plan.findByIdAndUpdate(req.params.planId, req.body, returnNewDocument)
+  // const { title, description, image, date, time, location, tags } = req.body;
+  const {title} = req.body;
+  console.log('title----------', title)
+  // I WAS HERE YESTERDAY -- title is undefined, need to see what is formdata
+
+  Plan.findByIdAndUpdate(req.params.planId, {title}, {new: true})
     .then((result) => {
+      console.log('result edit----------', result)
       res.json(result);
     })
     .catch((error) => res.json(error));

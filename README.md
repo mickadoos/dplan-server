@@ -34,23 +34,23 @@ const userSchema = new Schema(
     },
     name: {
       type: String,
-      required: [true, "Name is required."],
+      // required: [true, "Name is required."],
     },
     username: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
       trim: true
     },
     birthdate: {
-      type: String
+      type: Date,
     },
     gender: {
+      type: String,
       enum: ["male", "female", "other"]
     },
     profileImage: {
       type: String,
-      default: "https://picsum.photos/300"
     },
     phoneNumber: {
       type: String
@@ -107,7 +107,9 @@ const planSchema = new Schema(
     tags: [{type: String}],
 
     // Arrays Party Fiesta
-    attendees: [{type: Schema.Types.ObjectId, ref: "User"}]
+    invited: [[{type: Schema.Types.ObjectId, ref: "User"}]],
+    accepted: [[{type: Schema.Types.ObjectId, ref: "User"}]],
+    denied: [[{type: Schema.Types.ObjectId, ref: "User"}]],
 
   },
   {
@@ -125,17 +127,34 @@ const planSchema = new Schema(
 
 | Method |	Endpoint |	Require|	Response (200)|	Action|
 | ------ | ------ |  ------ |  ------ |  ------ |
-|POST|	/signup	const| { username, email, password } = req.body	json({user: user})||	Registers the user in the database and returns the logged in user. |
-|POST	|/login	const |{ email, password } = req.body	json({authToken: authToken})||	Logs in a user already registered.|
-|GET|	/plans/:username	|	json({authToken: authToken})||	Returns all the plans from the plans array from the corrent user.|
-|GET|	/plan/:planId	|	json({authToken: authToken})||	Returns the plan corresponding with the id.|
-|POST	|/new-plan		|json({user: user})	||Creates thes plan in the data base and resturns the plan’s id.|
-|PUT|	/plan/:planId/edit	|	json({authToken: authToken})||	Edits the current editing plan and returns the current plan id.|
-|DELETE	|/plan/:planId	|	json({authToken: authToken})||	Deletes the current plan and returns “ok”|
-|GET|	/plan/:planId/attendees	|	json({authToken: authToken})||	Returns all the users contained in attendees array of the corrent plan.|
-|GET	| /username 	|	json({authToken: authToken})||	Returns the current user information from the data base.|
-|PUT	| /:username /edit	|	json({authToken: authToken})||	Edits the current user information.|
-|GET	| /:username/friends	|	json({authToken: authToken})||	Returns the users of the friends array of the corrent user.|
+|POST|	/auth/signup|	|user.create|	Sign Up|
+|POST	|/auth/login|	|authToken|	Login|
+|GET|	/users/:username|	|OBJCT --> User.populate("plans")	|Find ALL plans of the user|
+|POST|	/plans/newPlan|	|plan.create|	Create new plan|
+|GET	|/plans/:planId|	|OBJCT --> Plan|	Find ONE plan of the user|
+|POST	|/plans/:planId/:username/accept|	|:username.findOneAndUpdate // yes->status=confirmed	|Accept invitation to a plan|
+|POST|	/plans/:planId/:username/decline|	|:username.findOneAndUpdate // no->status=declined|	Decline invitation to a plan|
+|POST|	/plans/:planId/accept|	|:username.findOneAndUpdate // yes->status=confirmed & no->status=declined	|Accept or not invitation to a plan|
+|PUT|	/plans/:planId|	|OBJCT --> Plan (edited)	|Edit plan|
+|GET|	/plans/:planId/invite|	||	View friends ti invite to a plan|
+|POST|	/plans/:planId/invite	|	|| Invite friends to a plan|
+|GET|	/plans/:planId/guests|	|OBJCT --> User.populate("invited","accepted","denied")|	List of ALL guests invited to a plan |
+|GET|	/:username/profile|	|OBJCT --> User.populate(friendsToAccept)	|User info for profile|
+|PUT|	/:username/edit|	|OBJCT --> User (edited)|	Edit user info|
+|GET|	/:username/friends|	|OBJCT --> User.populate(friends)|	User friends|
+|GET|	/:username/addFriends|	|ARRAY OBJCTS [.find(!friends)]	|Show all Dplan users (except friends)|
+|POST|	/:username/friendRequest/:idPerson|	|:username.findOneAndUpdate // friendsRequested.push(:idPerson)	|Send friend request|
+|		| | |:idPerson.findOneAndUpdate // friendsToAccept.push(:username)| |	
+|POST|	/:username/acceptFriend/:idPerson|	|:username.findOneAndUpdate // friends.push(:idPerson) & friendsToAccept.pop(:idPerson)|	Accept friend requests|
+|		| | |:idPerson.findOneAndUpdate // friends.push(:username) & friendsRequested.pop(:username)|	|
+|POST|	/:username/denyFriend/:idPerson|	|:username.findOneAndUpdate // friendsToAccept.pop(:idPerson)|	Deny friend requests|
+|		| | |:idPerson.findOneAndUpdate // friendsRequested.pop(:username)| |	
+|POST	|/:username/acceptFriend/:idPerson|	|:username.findOneAndUpdate // friends.push(:idPerson) & friendsToAccept.pop(:idPerson)|	Accept friend requests|
+|		|	| |:idPerson.findOneAndUpdate // friends.push(:username) & friendsRequested.pop(:username)| |
+|POST	|/:username/declineFriend/:idPerson|	|:username.findOneAndUpdate // friendsToAccept.pop(:idPerson)|	|Decline friend requests|
+|		|	| |:idPerson.findOneAndUpdate // friendsRequested.pop(:username)| |
+
+
 
 
 Welcome to the Olympus.

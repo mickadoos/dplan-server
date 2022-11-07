@@ -60,6 +60,7 @@ router.get("/:planId/guests", (req, res, next) => {
     .populate("accepted")
     .populate("denied")
     .then((result) => {
+      console.log("GUESTS: ",result)
       res.json(result);
     })
     .catch((error) => res.json(error));

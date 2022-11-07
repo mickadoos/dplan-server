@@ -22,7 +22,7 @@ const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
 const userRoutes = require("./routes/user.routes");
-app.use("/api/users/:username", userRoutes);
+app.use("/api/users", userRoutes);
 
 const planRoutes = require("./routes/plans.routes");
 app.use("/api/plans", planRoutes);

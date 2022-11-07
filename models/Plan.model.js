@@ -11,21 +11,21 @@ const planSchema = new Schema(
         type: String,
         required: true
     },
-    image : {
+    planImage : {
         type: String,
-        default: "https://picsum.photos/300"
+        // default: "https://picsum.photos/300"
     },
     date: {
         type: String,
-        required: true
+        // required: true
     },
     time: {
         type: String,
-        required: true
+        // required: true
     },
     location: {
         type: String,
-        required: true
+        // required: true
     },
     tags: [{type: String}],
 

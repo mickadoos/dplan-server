@@ -36,7 +36,8 @@ router.put("/:username/edit", (req, res, next) => {
       };
     User.findOneAndUpdate({"username": req.params.username}, updatedProfile, returnNewDocument)
       .then((result) => {
-        res.json("user updated with: ",result);
+        console.log("user updated")
+        res.json(result);
       })
       .catch((error) => res.json(error));
   });
@@ -53,29 +54,30 @@ router.get("/:username/friends", (req, res, next) => {
 
  // All users using DPlan --> /:username/addFriends
  router.get("/:username/addFriends", (req, res, next) => {
-    User.find()
-    .then((result) => {
-        const res = result.filter(user => {
-            return user.username != req.params.username
-        })
-        res.json(res); //retorna tots el users menys "JO". Com tornar tots menys "JO" i el "MEUS" amics.
+    const promUser = User.findOne({"username":req.params.username})
+    const promPersons = User.find()
+    Promise.all([promUser, promPersons])
+    .then(resp => {
+      const alreadyFriends = [resp[0]._id, ...resp[0].friends, ...resp[0].friendsRequested, ...resp[0].friendsToAccept] //array de IDs
+      User.find({_id: {"$nin": alreadyFriends}})
+      .then(resp =>{
+        if( resp.length === 0){
+          const resp0 = []
+          res.json(resp0);
+        }
+        else {res.json(resp)}
+        
       })
+      .catch((error) => res.json(error));
+    }) 
     .catch((error) => res.json(error));
-
-    // User.findOne(req.params.username)
-    // .populate("friends")
-    // .populate("friendsRequested")
-    // .populate("friendsToAccept")
-    //   .then((result) => {
-    //     res.json(result);
-    //   })
-    //   .catch((error) => res.json(error));
   }); 
 
 // Profile Page, edit --> /:username/friendRequest/:idPerson
 router.post("/:username/friendRequest/:idPerson", (req, res, next) => {
     const username = req.params.username
     const idPerson = req.params.idPerson
+    console.log("You are in FRIENDREQUEST POST 2: ", username, idPerson )
 
     const promUser = User.findOne({"username": username})
     const promPerson = User.findById(idPerson)
@@ -87,11 +89,14 @@ router.post("/:username/friendRequest/:idPerson", (req, res, next) => {
           const promPersonUpdate = User.findByIdAndUpdate(idPerson , resp[1], {new:true})
           Promise.all([promUserUpdate, promPersonUpdate])
           .then(resp => {
-            res.json("Friend requested succesfully: ", resp)
+            console.log("Friend requested succesfully")
+            res.json(resp)
           })
           .catch((error) => res.json(error));
+          console.log("ERROR IN 1")
         })
         .catch((error) => res.json(error));
+        console.log("ERROR IN 2")
 
   })
   // User.findOne({"username": username})
@@ -129,7 +134,8 @@ router.post("/:username/acceptFriend/:idPerson", (req, res, next) => {
     const promPersonUpdate = User.findByIdAndUpdate(idPerson , resp[1], {new:true})
     Promise.all([promUserUpdate, promPersonUpdate])
     .then(resp => {
-      res.json("Friend Accepted succesfully: ", resp)
+      console.log("Friend Accepted succesfully")
+      res.json(resp)
     })
     .catch((error) => res.json(error));
   })
@@ -173,7 +179,8 @@ router.post("/:username/acceptFriend/:idPerson", (req, res, next) => {
     const promPersonUpdate = User.findByIdAndUpdate(idPerson , resp[1], {new:true})
     Promise.all([promUserUpdate, promPersonUpdate])
     .then(resp => {
-      res.json("Friend Declined succesfully: ", resp)
+      console.log("Friend Declined succesfully")
+      res.json(resp)
     })
     .catch((error) => res.json(error));
   })

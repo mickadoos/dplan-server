@@ -5,7 +5,7 @@ const router = express.Router();
 // User plans Page --> /:username
 router.get("/:username", (req, res, next) => {
   User.findOne({"username":req.params.username})
-  .populate ("plans")
+  .populate ("plans._id")
     .then((result) => {
       res.json(result);
     })

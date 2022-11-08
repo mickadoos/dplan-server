@@ -15,7 +15,6 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
   const { title, description, planImage, date, time, location } = req.body;
-  console.log('req.BODY---------', req.body)
   const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
@@ -36,7 +35,7 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
 
 // Plan Page --> /api/plans/:planId
 router.get("/:planId", (req, res, next) => {
-  Plan.findOne(req.params.planId)
+  Plan.findOne({"_id": req.params.planId})
     .then((result) => {
       res.json(result);
     })
@@ -44,9 +43,11 @@ router.get("/:planId", (req, res, next) => {
 });
 
 // Plan Edit --> /api/plans/:planId
-router.put("/:planId", (req, res, next) => {
-  const { title, description, image, date, time, location, tags } = req.body;
-  Plan.findByIdAndUpdate(req.params.planId, req.body, returnNewDocument)
+router.put("/:planId", fileUploader.single("planImage"), (req, res, next) => {
+  
+  const { title, description, date, time, location} = req.body;
+
+  Plan.findByIdAndUpdate(req.params.planId, (req.file? { "planImage": req.file.path} : req.body ), {new: true})
     .then((result) => {
       res.json(result);
     })

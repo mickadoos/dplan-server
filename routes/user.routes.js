@@ -36,7 +36,6 @@ router.put("/:username/edit", (req, res, next) => {
       };
     User.findOneAndUpdate({"username": req.params.username}, updatedProfile, returnNewDocument)
       .then((result) => {
-        console.log("user updated")
         res.json(result);
       })
       .catch((error) => res.json(error));
@@ -47,7 +46,6 @@ router.get("/:username/friends", (req, res, next) => {
     User.findOne({"username":req.params.username})
     .populate("friends")
       .then((result) => {
-        console.log("FRIENDS: ",result)
         res.json(result);
       })
       .catch((error) => res.json(error));

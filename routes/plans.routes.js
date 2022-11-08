@@ -15,20 +15,16 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
   const { title, description, planImage, date, time, location } = req.body;
-  console.log('req.BODY---------', req.body)
   const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
   .then(resp => {
-    console.log("resp ", resp)
-    console.log("newplan ID: ", resp[0]._id.toString().trim())
     resp[1].plans.push({"_id": resp[0]._id.toString(), "status":"admin"})
     User.findByIdAndUpdate(resp[1]._id, resp[1], {new: true})
     .then(resp => {
       res.json(resp)
     })
     .catch((error) => {
-      console.log("Catch newPlan dins promise: ", error)
       res.json(error)});
   })
   // res.json(req.body);
@@ -60,7 +56,7 @@ router.get("/:planId/guests", (req, res, next) => {
     .populate("accepted")
     .populate("denied")
     .then((result) => {
-      console.log("GUESTS: ",result)
+      console.log("GUESTS BACK: ",result)
       res.json(result);
     })
     .catch((error) => res.json(error));

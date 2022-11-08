@@ -58,7 +58,6 @@ router.get("/:planId/guests", (req, res, next) => {
     .populate("accepted")
     .populate("denied")
     .then((result) => {
-      console.log("GUESTS BACK: ",result)
       res.json(result);
     })
     .catch((error) => res.json(error));
@@ -77,6 +76,7 @@ router.get("/:planId/:username/invite", (req, res, next) => {
 
 // Invite guests to a plan (invite) --> /api/plans/:planId/:idPerson/invite
 router.post("/:planId/:idPerson/invite", (req, res, next) => {
+  console.log("INVITE - POST. IdPerson/IdPlan: ", req.params.idPerson, req.params.planId)
   let idPerson = req.params.idPerson
   let planId = req.params.planId
   let promUser = User.findById(idPerson)
@@ -91,7 +91,7 @@ router.post("/:planId/:idPerson/invite", (req, res, next) => {
     return Promise.all([promUserUpdated, promPlanUpdated])
   })   
   .then(resp => {
-    res.json("Plan invite request succesfully sent: ",resp)
+    res.json(resp)
   })
   .catch((error) => res.json(error));
 });

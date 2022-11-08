@@ -1,6 +1,9 @@
 const express = require("express");
 const User = require("../models/User.model");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+const fileUploader = require('../config/cloudinary.config')
+
 
 // User plans Page --> /:username
 router.get("/:username", (req, res, next) => {
@@ -23,21 +26,33 @@ router.get("/:username/profile", (req, res, next) => {
   });
 
 // Profile Page, edit --> /:username/edit
-router.put("/:username/edit", (req, res, next) => {
-    const { profileImage, name, username, description, birthdate, mail, phoneNumber } = req.body;
-    const updatedProfile = {
-        profileImage: req.body.profileImage,
-        name: req.body.name,
-        username: req.body.username,
-        description: req.body.description,
-        birthdate: req.body.birthdate,
-        mail: req.body.mail,
-        phoneNumber: req.body.phoneNumber
-      };
-    User.findOneAndUpdate({"username": req.params.username}, updatedProfile, returnNewDocument)
+router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, next) => {
+  console.log("req.params.username: ", req.params.username)
+  console.log("req.body put edit profile: ", req.body)
+
+    // const { name, username, description, birthdate, email, phoneNumber, gender } = req.body;
+    // const updatedProfile = {
+    //     name: req.body.name,
+    //     username: req.body.username,
+    //     description: req.body.description,
+    //     birthdate: req.body.birthdate,
+    //     email: req.body.email,
+    //     phoneNumber: req.body.phoneNumber,
+    //     gender
+    //   };
+    User.findOneAndUpdate({"username": req.params.username}, (req.file? {"profileImage": req.file.path}:req.body), {new: true})
       .then((result) => {
-        console.log("user updated")
-        res.json(result);
+        console.log("hola ", result)
+        const { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage } = result
+
+        const payload = { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage };
+
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+          algorithm: "HS256",
+          expiresIn: "24h",
+        });
+        console.log("user updated", authToken)
+        res.json(authToken);
       })
       .catch((error) => res.json(error));
   });

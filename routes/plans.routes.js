@@ -15,7 +15,6 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
   const { title, description, planImage, date, time, location } = req.body;
-  console.log('req.BODY---------', req.body)
   const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
@@ -44,15 +43,12 @@ router.get("/:planId", (req, res, next) => {
 });
 
 // Plan Edit --> /api/plans/:planId
-router.put("/:planId", (req, res, next) => {
-  // const { title, description, image, date, time, location, tags } = req.body;
-  const {title} = req.body;
-  console.log('title----------', title)
-  // I WAS HERE YESTERDAY -- title is undefined, need to see what is formdata
+router.put("/:planId", fileUploader.single("planImage"), (req, res, next) => {
+  
+  const { title, description, date, time, location} = req.body;
 
-  Plan.findByIdAndUpdate(req.params.planId, {title}, {new: true})
+  Plan.findByIdAndUpdate(req.params.planId, (req.file? { "planImage": req.file.path} : req.body ), {new: true})
     .then((result) => {
-      console.log('result edit----------', result)
       res.json(result);
     })
     .catch((error) => res.json(error));

@@ -61,7 +61,7 @@ router.post("/signup", fileUploader.single('profileImage'), (req, res, next) => 
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name, username , gender, country, phoneNumber, birthdate, profileImage: req.file.path}); //UPDATE MODEL ---ternari if file exists
+      return User.create({ email, password: hashedPassword, name: name.trim(), username: username.trim() , gender, country, phoneNumber, birthdate, profileImage: req.file.path}); //UPDATE MODEL ---ternari if file exists
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password

@@ -5,6 +5,7 @@ const router = express.Router();
 
 // ********* require fileUploader in order to use it *********
 const fileUploader = require('../config/cloudinary.config');
+const { default: mongoose } = require("mongoose");
 
 var ObjectID = require('mongodb').ObjectId;
 
@@ -18,7 +19,7 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
   const { title, description, planImage, date, time, location } = req.body;
-  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location})
+  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
   .then(resp => {
@@ -77,7 +78,6 @@ router.get("/:planId/guests", (req, res, next) => {
     .populate("accepted")
     .populate("denied")
     .then((result) => {
-      console.log("GUESTS BACK: ",result)
       res.json(result);
     })
     .catch((error) => res.json(error));
@@ -96,6 +96,7 @@ router.get("/:planId/:username/invite", (req, res, next) => {
 
 // Invite guests to a plan (invite) --> /api/plans/:planId/:idPerson/invite
 router.post("/:planId/:idPerson/invite", (req, res, next) => {
+  console.log("INVITE - POST. IdPerson/IdPlan: ", req.params.idPerson, req.params.planId)
   let idPerson = req.params.idPerson
   let planId = req.params.planId
   let promUser = User.findById(idPerson)
@@ -110,7 +111,7 @@ router.post("/:planId/:idPerson/invite", (req, res, next) => {
     return Promise.all([promUserUpdated, promPlanUpdated])
   })   
   .then(resp => {
-    res.json("Plan invite request succesfully sent: ",resp)
+    res.json(resp)
   })
   .catch((error) => res.json(error));
 });
@@ -124,7 +125,8 @@ router.post("/:planId/:username/accept", (req, res, next) => {
   Promise.all([promUser, promPlan])
     .then((resp) => {
       const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id === req.params.planId) {
+        if (plan._id.toString() == req.params.planId) {
+          console.log("IN IF ACCEPT PLAN - plan: ", plan)
           plan.status = "confirmed";
         }
         return plan;
@@ -145,7 +147,8 @@ router.post("/:planId/:username/accept", (req, res, next) => {
       return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      res.json("Plan Accepted Succesfully: ", resp);
+      console.log("Plan Accepted Succesfully: ", resp)
+      res.json(resp);
     })
   .catch((error) => res.json(error));
 
@@ -160,7 +163,7 @@ router.post("/:planId/:username/decline", (req, res, next) => {
   Promise.all([promUser, promPlan])
     .then((resp) => {
       const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id === req.params.planId) {
+        if (plan._id.toString() === req.params.planId) {
           plan.status = "declined";
         }
         return plan;
@@ -181,7 +184,8 @@ router.post("/:planId/:username/decline", (req, res, next) => {
       return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      res.json("Plan Declined Succesfully: ", resp);
+      console.log("Plan Declined Succesfully: ", resp)
+      res.json(resp);
     })
   .catch((error) => res.json(error));
 

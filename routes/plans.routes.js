@@ -76,7 +76,7 @@ router.get("/:planId/guests", (req, res, next) => {
   Plan.findById(req.params.planId)
     .populate("invited")
     .populate("accepted")
-    .populate("denied")
+    .populate("declined")
     .then((result) => {
       res.json(result);
     })

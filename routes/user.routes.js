@@ -19,6 +19,7 @@ router.get("/:username", (req, res, next) => {
 router.get("/:username/profile", (req, res, next) => {
     User.findOne({"username":req.params.username})
     .populate ("friendsToAccept")
+    .populate('friends')
       .then((result) => {
         res.json(result);
       })

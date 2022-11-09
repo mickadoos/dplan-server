@@ -22,10 +22,14 @@ const saltRounds = 10;
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", fileUploader.single('profileImage'), (req, res, next) => {
   const { email, password, name, username, gender, country, phoneNumber, birthdate, profileImage} = req.body; //UPDATE MODEL
-
+  console.log("birthdate: ", birthdate)
   // Check if email or password or name are provided as empty strings
-  if (email === "" || password === "" || name === "") {
-    res.status(400).json({ message: "Provide email, password and name" });
+  if (username.indexOf(' ') >= 0) {
+    res.status(400).json({ message: "Username can't have spaces." });
+    return;
+  }
+  if (email === "" || password === "" || name === "" || username === "" || gender === "" || country === "" || phoneNumber === "") {
+    res.status(400).json({ message: "Please fill in all fields" });
     return;
   }
 
@@ -61,7 +65,7 @@ router.post("/signup", fileUploader.single('profileImage'), (req, res, next) => 
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name, username , gender, country, phoneNumber, birthdate, profileImage: req.file.path}); //UPDATE MODEL ---ternari if file exists
+      return User.create({ email, password: hashedPassword, name: name.trim(), username: username.trim() , gender, country, phoneNumber, birthdate, profileImage: req.file.path}); //UPDATE MODEL ---ternari if file exists
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password

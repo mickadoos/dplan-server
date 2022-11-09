@@ -5,6 +5,7 @@ const router = express.Router();
 
 // ********* require fileUploader in order to use it *********
 const fileUploader = require('../config/cloudinary.config');
+const { default: mongoose } = require("mongoose");
 
 router.get("/", (req, res, next) => {
   res.json("All good in here");
@@ -15,7 +16,7 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
   const { title, description, planImage, date, time, location } = req.body;
-  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location})
+  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
   .then(resp => {
@@ -104,12 +105,18 @@ router.post("/:planId/:username/accept", (req, res, next) => {
 
   Promise.all([promUser, promPlan])
     .then((resp) => {
+      console.log("PLANS ACCEPT BACK: ",resp[0].plans)
       const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id === req.params.planId) {
+        console.log("BEFORE IF ACCEPT PLAN - plan typeOf: ",typeOf(req.params.planId))
+        console.log("BEFORE IF ACCEPT PLAN - plan typeOf: ",typeOf(plan._id))
+        console.log("BEFORE IF ACCEPT PLAN - plan mongoose: ",mongoose.Types.ObjectId(plan._id))
+        if (plan._id == mongoose.Types.ObjectId(req.params.planId)) {
+          console.log("IN IF ACCEPT PLAN - plan: ", plan)
           plan.status = "confirmed";
         }
         return plan;
       });
+      console.log("PLANS UPDATED: ",plansUpdated)
 
       let indexUser = resp[1].invited.indexOf(resp[0]._id);
       resp[1].invited.splice(indexUser, 1);
@@ -126,7 +133,8 @@ router.post("/:planId/:username/accept", (req, res, next) => {
       return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      res.json("Plan Accepted Succesfully: ", resp);
+      console.log("Plan Accepted Succesfully: ", resp)
+      res.json(resp);
     })
   .catch((error) => res.json(error));
 
@@ -162,7 +170,8 @@ router.post("/:planId/:username/decline", (req, res, next) => {
       return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      res.json("Plan Declined Succesfully: ", resp);
+      console.log("Plan Declined Succesfully: ", resp)
+      res.json(resp);
     })
   .catch((error) => res.json(error));
 

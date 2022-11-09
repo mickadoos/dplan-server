@@ -28,6 +28,10 @@ const planSchema = new Schema(
         // required: true
     },
     tags: [{type: String}],
+    
+    isAdmin : {
+      type: String
+  },
 
     // Arrays Party Fiesta
     invited: [{type: Schema.Types.ObjectId, ref: "User"}],

@@ -105,18 +105,13 @@ router.post("/:planId/:username/accept", (req, res, next) => {
 
   Promise.all([promUser, promPlan])
     .then((resp) => {
-      console.log("PLANS ACCEPT BACK: ",resp[0].plans)
       const plansUpdated = resp[0].plans.map((plan) => {
-        console.log("BEFORE IF ACCEPT PLAN - plan typeOf: ",typeOf(req.params.planId))
-        console.log("BEFORE IF ACCEPT PLAN - plan typeOf: ",typeOf(plan._id))
-        console.log("BEFORE IF ACCEPT PLAN - plan mongoose: ",mongoose.Types.ObjectId(plan._id))
-        if (plan._id == mongoose.Types.ObjectId(req.params.planId)) {
+        if (plan._id.toString() == req.params.planId) {
           console.log("IN IF ACCEPT PLAN - plan: ", plan)
           plan.status = "confirmed";
         }
         return plan;
       });
-      console.log("PLANS UPDATED: ",plansUpdated)
 
       let indexUser = resp[1].invited.indexOf(resp[0]._id);
       resp[1].invited.splice(indexUser, 1);
@@ -149,7 +144,7 @@ router.post("/:planId/:username/decline", (req, res, next) => {
   Promise.all([promUser, promPlan])
     .then((resp) => {
       const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id === req.params.planId) {
+        if (plan._id.toString() === req.params.planId) {
           plan.status = "declined";
         }
         return plan;

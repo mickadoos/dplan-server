@@ -6,6 +6,9 @@ const router = express.Router();
 // ********* require fileUploader in order to use it *********
 const fileUploader = require('../config/cloudinary.config');
 
+var ObjectID = require('mongodb').ObjectId;
+
+
 router.get("/", (req, res, next) => {
   res.json("All good in here");
 });
@@ -50,6 +53,22 @@ router.put("/:planId", fileUploader.single("planImage"), (req, res, next) => {
     })
     .catch((error) => res.json(error));
 });
+
+// Plan Delete --> /api/plans/:planId
+router.delete("/:planId", (req, res, next) => {
+
+//It would be a nice idea to update the plans array accessing through the planId populate
+ User.updateMany({}, { $pull: { plans: {_id : req.params.planId } } })
+  .then((result) => {
+  })
+  .catch((error) => res.json(error));
+
+  Plan.findByIdAndDelete(req.params.planId)
+  .then(result => {
+    res.json("Plan deleted succesfully!")
+  })
+  .catch(error => res.json (error))
+})
 
 // Plan Guests --> /api/plans/:planId/guests
 router.get("/:planId/guests", (req, res, next) => {

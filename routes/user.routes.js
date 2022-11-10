@@ -51,7 +51,7 @@ router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, ne
         console.log("hola ", result)
         const { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage } = result
 
-        const payload = { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage };
+        const payload = { _id, email, name, username, usernameMod:"moderator", gender, country, phoneNumber, birthdate, profileImage };
 
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
           algorithm: "HS256",

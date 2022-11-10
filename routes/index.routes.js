@@ -4,7 +4,10 @@ const Plan = require("../models/Plan.model");
 
 
 router.get("/plans", (req, res, next) => {
-  res.json("All good in here");
+  Plan.find()
+  .then(resp => {
+    res.json(resp)
+  })
 });
 
 router.post("/", (req, res, next) => {

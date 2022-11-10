@@ -11,7 +11,7 @@ var ObjectID = require('mongodb').ObjectId;
 
 
 router.get("/", (req, res, next) => {
-  res.json("All good in here");
+  res.json("jaja");
 });
 
 // Create new plan --> /api/plans/:username/newPlan

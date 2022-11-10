@@ -108,7 +108,7 @@ router.post("/login", (req, res, next) => {
         const { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage } = foundUser; //REVIEW THIS, do we need to deconstruct all user properties?
 
         // Create an object that will be set as the token payload
-        const payload = { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage };
+        const payload = { _id, email, name, username, usernameMod:"moderator", gender, country, phoneNumber, birthdate, profileImage };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {

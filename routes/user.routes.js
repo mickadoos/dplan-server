@@ -10,7 +10,7 @@ router.get("/:username", (req, res, next) => {
   User.findOne({"username":req.params.username})
   .populate ("plans._id")
     .then((result) => {
-      res.json(result);
+      res.json(result)
     })
     .catch((error) => res.json(error));
 });

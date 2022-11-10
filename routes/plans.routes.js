@@ -134,7 +134,6 @@ router.post("/:planId/:username/accept", (req, res, next) => {
     .then((resp) => {
       const plansUpdated = resp[0].plans.map((plan) => {
         if (plan._id.toString() == req.params.planId) {
-          console.log("IN IF ACCEPT PLAN - plan: ", plan)
           plan.status = "confirmed";
         }
         return plan;
@@ -171,7 +170,7 @@ router.post("/:planId/:username/decline", (req, res, next) => {
   Promise.all([promUser, promPlan])
     .then((resp) => {
       const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id.toString() === req.params.planId) {
+        if (plan._id.toString() == req.params.planId) {
           plan.status = "declined";
         }
         return plan;

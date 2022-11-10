@@ -30,7 +30,12 @@ router.get("/:username/profile", (req, res, next) => {
 router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, next) => {
   console.log("req.params.username: ", req.params.username)
   console.log("req.body put edit profile: ", req.body)
-
+  const { email, name, username, gender, country, phoneNumber, birthdate} = req.body;
+  if (email === "" || name === "" || username === "" || gender === "" || country === "" || phoneNumber === "" || birthdate === "") {
+    console.log('hey there fill some shit')
+    res.status(400).json({ message: "Please fill in all fields" });
+    return;
+  }
     // const { name, username, description, birthdate, email, phoneNumber, gender } = req.body;
     // const updatedProfile = {
     //     name: req.body.name,
@@ -94,11 +99,17 @@ router.post("/:username/friendRequest/:idPerson", (req, res, next) => {
     const username = req.params.username
     const idPerson = req.params.idPerson
     console.log("You are in FRIENDREQUEST POST 2: ", username, idPerson )
-
     const promUser = User.findOne({"username": username})
     const promPerson = User.findById(idPerson)
-      Promise.all([promUser, promPerson])
-        .then(resp => {
+    Promise.all([promUser, promPerson])
+    .then(resp => {
+          // CHECK IF THIS WORKS
+          console.log('IDPERSON IN PROMISE ALL', idPerson)
+          console.log('FRIENDS TO ACCEPT', resp[0].friendsToAccept);
+          if(resp[0].friendsToAccept.includes(idPerson)) {
+            console.log('This user is already in your list console')
+            return res.json("This user is already in your list");}
+
           resp[0].friendsRequested.push(idPerson)
           resp[1].friendsToAccept.push(resp[0]._id)
           const promUserUpdate = User.findByIdAndUpdate(resp[0]._id , resp[0], {new:true})

@@ -19,6 +19,11 @@ router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, n
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
   const { title, description, planImage, date, time, location } = req.body;
+
+  if (title === "" || description === "" || date === "" || time === "" || location === "") {
+    res.status(400).json({ message: "Please fill in all fields" });
+    return;
+  }
   const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
@@ -47,7 +52,10 @@ router.get("/:planId", (req, res, next) => {
 router.put("/:planId", fileUploader.single("planImage"), (req, res, next) => {
   
   const { title, description, date, time, location} = req.body;
-
+  if (title === "" || description === "" || date === "" || time === "" || location === "") {
+    res.status(400).json({ message: "Please fill in all fields" });
+    return;
+  }
   Plan.findByIdAndUpdate(req.params.planId, (req.file? { "planImage": req.file.path} : req.body ), {new: true})
     .then((result) => {
       res.json(result);

@@ -11,27 +11,32 @@ const planSchema = new Schema(
         type: String,
         required: true
     },
-    image : {
+    planImage : {
         type: String,
-        default: "https://picsum.photos/300"
+        // default: "https://picsum.photos/300"
     },
     date: {
         type: String,
-        required: true
+        // required: true
     },
     time: {
         type: String,
-        required: true
+        // required: true
     },
     location: {
         type: String,
-        required: true
+        // required: true
     },
     tags: [{type: String}],
+    
+    isAdmin : {
+      type: String
+  },
 
     // Arrays Party Fiesta
-    attendees: [{type: Schema.Types.ObjectId, ref: "User"}]
-
+    invited: [{type: Schema.Types.ObjectId, ref: "User"}],
+    accepted: [{type: Schema.Types.ObjectId, ref: "User"}],
+    declined: [{type: Schema.Types.ObjectId, ref: "User"}]
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

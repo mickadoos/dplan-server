@@ -31,7 +31,22 @@ const planSchema = new Schema(
     
     isAdmin : {
       type: String
-  },
+    },
+
+    musicList: {
+      type: String,
+      // required: true
+    },
+
+    photoCloud: {
+      type: String,
+      // required: true
+    },
+
+    interestingLinks: {
+      type: String,
+      // required: true
+    },
 
     // Arrays Party Fiesta
     invited: [{type: Schema.Types.ObjectId, ref: "User"}],

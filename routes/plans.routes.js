@@ -18,13 +18,13 @@ router.get("/", (req, res, next) => {
 router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, next) => {
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
-  const { title, description, planImage, date, time, location } = req.body;
+  const { title, description, planImage, date, time, location, musicList, photoCloud, interestingLinks } = req.body;
 
   if (title === "" || description === "" || date === "" || time === "" || location === "") {
     res.status(400).json({ message: "Please fill in all fields" });
     return;
   }
-  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username})
+  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username, musicList, photoCloud, interestingLinks})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
   .then(resp => {
@@ -104,7 +104,6 @@ router.get("/:planId/:username/invite", (req, res, next) => {
 
 // Invite guests to a plan (invite) --> /api/plans/:planId/:idPerson/invite
 router.post("/:planId/:idPerson/invite", (req, res, next) => {
-  console.log("INVITE - POST. IdPerson/IdPlan: ", req.params.idPerson, req.params.planId)
   let idPerson = req.params.idPerson
   let planId = req.params.planId
   let promUser = User.findById(idPerson)
@@ -154,7 +153,6 @@ router.post("/:planId/:username/accept", (req, res, next) => {
       return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      console.log("Plan Accepted Succesfully: ", resp)
       res.json(resp);
     })
   .catch((error) => res.json(error));
@@ -191,7 +189,6 @@ router.post("/:planId/:username/decline", (req, res, next) => {
       return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      console.log("Plan Declined Succesfully: ", resp)
       res.json(resp);
     })
   .catch((error) => res.json(error));

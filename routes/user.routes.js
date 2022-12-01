@@ -30,6 +30,7 @@ router.get("/:username/profile", (req, res, next) => {
 router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, next) => {
   const { email, name, username, gender, country, phoneNumber, birthdate} = req.body;
   if (email === "" || name === "" || username === "" || gender === "" || country === "" || phoneNumber === "" || birthdate === "") {
+    console.log('hey there fill some shit')
     res.status(400).json({ message: "Please fill in all fields" });
     return;
   }
@@ -45,6 +46,7 @@ router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, ne
     //   };
     User.findOneAndUpdate({"username": req.params.username}, (req.file? {"profileImage": req.file.path}:req.body), {new: true})
       .then((result) => {
+
         const { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage } = result
 
         const payload = { _id, email, name, username, usernameMod:"moderator", gender, country, phoneNumber, birthdate, profileImage };
@@ -111,7 +113,6 @@ router.post("/:username/friendRequest/:idPerson", (req, res, next) => {
           .catch((error) => res.json(error));
         })
         .catch((error) => res.json(error));
-
   })
 
  // Accept friend --> /:username/acceptFriend/:idPerson

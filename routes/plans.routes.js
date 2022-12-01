@@ -18,13 +18,13 @@ router.get("/", (req, res, next) => {
 router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, next) => {
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
-  const { title, description, planImage, date, time, location } = req.body;
+  const { title, description, planImage, date, time, location, musicList, photoCloud, interestingLinks } = req.body;
 
   if (title === "" || description === "" || date === "" || time === "" || location === "") {
     res.status(400).json({ message: "Please fill in all fields" });
     return;
   }
-  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username})
+  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username, musicList, photoCloud, interestingLinks})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
   .then(resp => {

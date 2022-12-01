@@ -30,7 +30,6 @@ router.get("/:username/profile", (req, res, next) => {
 router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, next) => {
   const { email, name, username, gender, country, phoneNumber, birthdate} = req.body;
   if (email === "" || name === "" || username === "" || gender === "" || country === "" || phoneNumber === "" || birthdate === "") {
-    console.log('hey there fill some shit')
     res.status(400).json({ message: "Please fill in all fields" });
     return;
   }

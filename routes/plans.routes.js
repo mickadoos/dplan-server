@@ -14,17 +14,27 @@ router.get("/", (req, res, next) => {
   res.json("jaja");
 });
 
+router.get("/plans", (req, res, next) => {
+  Plan.find({ privacy: "public" })
+  .then(response => {
+      res.json(response)
+  })
+  .catch(error => {
+    res.json(error)
+  })
+})
+
 // Create new plan --> /api/plans/:username/newPlan
 router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, next) => {
   let username = req.params.username
   // const { title, description, image, date, time, location, tags } = req.body;
-  const { title, description, planImage, date, time, location, musicList, photoCloud, interestingLinks } = req.body;
+  const { title, description, planImage, date, time, location, latitud, longitud, musicList, photoCloud, interestingLinks, privacy } = req.body;
 
   if (title === "" || description === "" || date === "" || time === "" || location === "") {
     res.status(400).json({ message: "Please fill in all fields" });
     return;
   }
-  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, isAdmin:username, musicList, photoCloud, interestingLinks})
+  const promNewPlan = Plan.create({ title, description, planImage: req.file.path, date, time, location, latitud, longitud, isAdmin:username, musicList, photoCloud, interestingLinks, privacy})
   const promUser = User.findOne({"username" : username})
   Promise.all([promNewPlan, promUser])
   .then(resp => {

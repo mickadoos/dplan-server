@@ -27,6 +27,8 @@ const planSchema = new Schema(
         type: String,
         // required: true
     },
+    latitud: {type: Number},
+    longitud: {type: Number},
     tags: [{type: String}],
     
     isAdmin : {
@@ -51,7 +53,12 @@ const planSchema = new Schema(
     // Arrays Party Fiesta
     invited: [{type: Schema.Types.ObjectId, ref: "User"}],
     accepted: [{type: Schema.Types.ObjectId, ref: "User"}],
-    declined: [{type: Schema.Types.ObjectId, ref: "User"}]
+    declined: [{type: Schema.Types.ObjectId, ref: "User"}],
+
+    privacy: {
+      type: String,
+      enum: ["public", "private"],
+    }
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

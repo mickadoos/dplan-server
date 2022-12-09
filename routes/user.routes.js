@@ -45,6 +45,7 @@ router.put("/:username/edit", fileUploader.single("profileImage"), (req, res, ne
     //   };
     User.findOneAndUpdate({"username": req.params.username}, (req.file? {"profileImage": req.file.path}:req.body), {new: true})
       .then((result) => {
+
         const { _id, email, name, username, gender, country, phoneNumber, birthdate, profileImage } = result
 
         const payload = { _id, email, name, username, usernameMod:"moderator", gender, country, phoneNumber, birthdate, profileImage };
@@ -111,7 +112,6 @@ router.post("/:username/friendRequest/:idPerson", (req, res, next) => {
           .catch((error) => res.json(error));
         })
         .catch((error) => res.json(error));
-
   })
 
  // Accept friend --> /:username/acceptFriend/:idPerson

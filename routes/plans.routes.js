@@ -51,7 +51,7 @@ router.get("/:planId", (req, res, next) => {
 // Plan Edit --> /api/plans/:planId
 router.put("/:planId", fileUploader.single("planImage"), (req, res, next) => {
   
-  const { title, description, date, time, location} = req.body;
+  const { title, description, date, time, location, musicList, photoCloud, interestingLinks} = req.body;
   if (title === "" || description === "" || date === "" || time === "" || location === "") {
     res.status(400).json({ message: "Please fill in all fields" });
     return;

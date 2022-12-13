@@ -21,10 +21,12 @@ You can check the app fully deployed [here]( https://famous-brioche-240d75.netli
 $ cd DPlan-back
 $ npm install
 $ npm start
+```
 
 
 ## Models
 #### User.model.js
+
 ```js
 const userSchema = new Schema(
   {

@@ -183,4 +183,4 @@ Any doubts? Contact us!
 
 <a href="https://www.linkedin.com/in/josepbp/">Josep</a>
 <a href="https://www.linkedin.com/in/eloipampliegajose/">Eloi</a>
-<a href=" http://www.linkedin.com/in/yabel-rodriguez">Yabel</a>
+<a href="http://www.linkedin.com/in/yabel-rodriguez">Yabel</a>

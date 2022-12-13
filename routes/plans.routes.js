@@ -141,29 +141,57 @@ router.post("/:planId/:username/accept", (req, res, next) => {
 
   Promise.all([promUser, promPlan])
     .then((resp) => {
-      const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id.toString() == req.params.planId) {
-          plan.status = "confirmed";
+      console.log('resp 1', resp[1].privacy)
+      if(resp[1].privacy === 'public'){
+        console.log('THIS PLAN IS PUBLIC')
+        const promUserPublic =  User.findByIdAndUpdate(resp[0]._id, { "$push": { "plans": {_id: resp[1], status: 'confirmed'} } }, {new: true});
+        const promPlanPublicAccept = Plan.findByIdAndUpdate(resp[1]._id, { "$push": { "accepted":  resp[0]._id}}, {new: true});
+        const promPlanPublicInvite = Plan.findByIdAndUpdate(resp[1]._id, { "$pull": { "invited":  resp[0]._id}}, {new: true});
+          
+        Promise.all([promUserPublic, promPlanPublicAccept, promPlanPublicInvite])
+        .then(response => {
+          res.json(response[0])
+          // res.json(response[1])
+        })
+        .catch((error) => res.json(error));
+
+        //   User.findByIdAndUpdate(resp[0]._id, { "$push": { "plans": {_id: resp[1], status: 'confirmed'} } }, {new: true})
+        //   .then((resp) => {
+        //     res.json(resp);
+        //   })
+        // .catch((error) => res.json(error));
+        // // resp[0].plans.push({_id: resp[1], status: 'confirmed'}) //HERE
+        // Plan.findByIdAndUpdate(resp[1]._id, { "$push": { "accepted":  resp[0]._id}}, {new: true})
+        // .then((resp) => {
+        //   res.json(resp);
+        // })
+        // .catch((error) => res.json(error));
+      } else {
+
+        const plansUpdated = resp[0].plans.map((plan) => {
+          if (plan._id.toString() == req.params.planId) {
+            plan.status = "confirmed";
+          }
+          return plan;
+        });
+        
+        let indexUser = resp[1].invited.indexOf(resp[0]._id);
+        resp[1].invited.splice(indexUser, 1);
+        resp[1].accepted.push(resp[0]._id);
+        
+        const promUser2 = User.findByIdAndUpdate(
+          resp[0]._id,
+          { plans: plansUpdated },
+          { new: true }
+          );
+          const promPlan2 = Plan.findByIdAndUpdate(req.params.planId, resp[1], {
+            new: true,
+          });
+          return Promise.all([promUser2, promPlan2]);
         }
-        return plan;
-      });
-
-      let indexUser = resp[1].invited.indexOf(resp[0]._id);
-      resp[1].invited.splice(indexUser, 1);
-      resp[1].accepted.push(resp[0]._id);
-
-      const promUser2 = User.findByIdAndUpdate(
-        resp[0]._id,
-        { plans: plansUpdated },
-        { new: true }
-      );
-      const promPlan2 = Plan.findByIdAndUpdate(req.params.planId, resp[1], {
-        new: true,
-      });
-      return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
-      res.json(resp);
+      // res.json(resp);  //descomenta esto si es necesario siino da problemas para confirmar public plans
     })
   .catch((error) => res.json(error));
 
@@ -177,26 +205,42 @@ router.post("/:planId/:username/decline", (req, res, next) => {
   
   Promise.all([promUser, promPlan])
     .then((resp) => {
-      const plansUpdated = resp[0].plans.map((plan) => {
-        if (plan._id.toString() == req.params.planId) {
-          plan.status = "declined";
+
+      if(resp[1].privacy === 'public'){
+        console.log('THIS PLAN IS PUBLIC')
+        const promUserPublic =  User.findByIdAndUpdate(resp[0]._id, { "$push": { "plans": {_id: resp[1], status: 'declined'} } }, {new: true});
+        const promPlanPublicDecline = Plan.findByIdAndUpdate(resp[1]._id, { "$push": { "declined":  resp[0]._id}}, {new: true});
+        // const promPlanPublicInvite = Plan.findByIdAndUpdate(resp[1]._id, { "$pull": { "invited":  resp[0]._id}}, {new: true});
+          
+        Promise.all([promUserPublic, promPlanPublicDecline])
+        .then(response => {
+          // res.json(response[0])
+          // res.json(response[1])
+        })
+        .catch((error) => res.json(error));
+      } else {
+
+        const plansUpdated = resp[0].plans.map((plan) => {
+          if (plan._id.toString() == req.params.planId) {
+            plan.status = "declined";
+          }
+          return plan;
+        });
+        
+        let indexUser = resp[1].invited.indexOf(resp[0]._id);
+        resp[1].invited.splice(indexUser, 1);
+        resp[1].declined.push(resp[0]._id);
+        
+        const promUser2 = User.findByIdAndUpdate(
+          resp[0]._id,
+          { plans: plansUpdated },
+          { new: true }
+          );
+          const promPlan2 = Plan.findByIdAndUpdate(req.params.planId, resp[1], {
+            new: true,
+          });
+          return Promise.all([promUser2, promPlan2]);
         }
-        return plan;
-      });
-
-      let indexUser = resp[1].invited.indexOf(resp[0]._id);
-      resp[1].invited.splice(indexUser, 1);
-      resp[1].declined.push(resp[0]._id);
-
-      const promUser2 = User.findByIdAndUpdate(
-        resp[0]._id,
-        { plans: plansUpdated },
-        { new: true }
-      );
-      const promPlan2 = Plan.findByIdAndUpdate(req.params.planId, resp[1], {
-        new: true,
-      });
-      return Promise.all([promUser2, promPlan2]);
     })
     .then((resp) => {
       res.json(resp);

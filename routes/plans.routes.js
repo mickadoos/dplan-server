@@ -91,6 +91,38 @@ router.get("/:planId/guests", (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
+//ADD POLL TO THE PLAN: /api/plans/:planId/addPoll
+router.post("/:planId/addPoll", (req, res, next) => {
+  console.log("body create poll: ", req.body)
+
+  Plan.findByIdAndUpdate(req.params.planId, { $addToSet : { polls: req.body  } }, {new: true})
+  .then(resp => {
+    res.json(resp)
+  })
+  .catch((error) => res.json(error));
+})
+
+//ADD VOTE TO THE PLAN:
+router.post("/:planId/addVote", (req, res, next) => {
+
+  Plan.findById(req.params.planId)
+  .then(resp => {
+    resp.polls.forEach((poll) => {
+      
+      if (poll.pollAnswers.some(ans => ans._id.toString().includes(req.body._id))){
+        const index = poll.pollAnswers.map(e => e._id.toString()).indexOf(req.body._id.toString());
+        poll.pollAnswers[index].votes++
+      }
+    })
+
+    Plan.findByIdAndUpdate(req.params.planId, resp, {new: true})
+    .then(response => {
+      res.json(response)
+    })
+  })
+  .catch((error) => res.json(error));
+})
+
 // Invite guests to a plan (list of friends) --> /api/plans/:planId/:username/invite
 router.get("/:planId/:username/invite", (req, res, next) => {
   let username = req.params.username

@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
     email: {
@@ -41,14 +40,10 @@ const userSchema = new Schema(
       type: String,
     },
 
-    // Arrays Party Fiesta
-
-    //Friends
     friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
     friendsRequested: [{ type: Schema.Types.ObjectId, ref: "User" }],
     friendsToAccept: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
-    //Plans
     plans: [
       {
         _id: { type: Schema.Types.ObjectId, ref: "Plan" },
@@ -60,7 +55,6 @@ const userSchema = new Schema(
     ],
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

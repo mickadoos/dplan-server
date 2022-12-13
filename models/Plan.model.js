@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const planSchema = new Schema(
   {
     title : {
@@ -48,13 +47,11 @@ const planSchema = new Schema(
       // required: true
     },
 
-    // Arrays Party Fiesta
     invited: [{type: Schema.Types.ObjectId, ref: "User"}],
     accepted: [{type: Schema.Types.ObjectId, ref: "User"}],
     declined: [{type: Schema.Types.ObjectId, ref: "User"}]
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

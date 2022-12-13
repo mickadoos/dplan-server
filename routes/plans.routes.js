@@ -9,11 +9,6 @@ const { default: mongoose } = require("mongoose");
 
 var ObjectID = require('mongodb').ObjectId;
 
-
-router.get("/", (req, res, next) => {
-  res.json("jaja");
-});
-
 // Create new plan --> /api/plans/:username/newPlan
 router.post("/:username/newPlan", fileUploader.single('planImage'), (req, res, next) => {
   let username = req.params.username

@@ -142,13 +142,14 @@ const planSchema = new Schema(
   {
     timestamps: true,
   }
-);```
+);
+```
 
 
 ## API Reference
 
 | METHOD | ENDPOINT  | RESPONSE(200)| ACTION |
-| :------------ |:---------------:| -----:|-----:|
+| :------------ |:---------------:| :-----:|-----:|
 | POST   | /auth/login | res.status(200).json({ authToken: authToken })| Send the token as the response.|
 | POST   | /auth/signup | res.status(201).json({ user: user }) |Creates a new user in the database. |
 | GET    | /auth/verify |    res.status(200).json(req.payload); | Send back the token payload object containing the user data. |

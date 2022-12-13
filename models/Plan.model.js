@@ -65,7 +65,7 @@ const planSchema = new Schema(
           },
         ],
       },
-    ],,
+    ],
 
     privacy: {
       type: String,

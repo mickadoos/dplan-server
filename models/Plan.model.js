@@ -27,10 +27,12 @@ const planSchema = new Schema(
       type: String,
       // required: true
     },
-    tags: [{ type: String }],
-
-    isAdmin: {
-      type: String,
+    latitud: {type: Number},
+    longitud: {type: Number},
+    tags: [{type: String}],
+    
+    isAdmin : {
+      type: String
     },
 
     musicList: {
@@ -63,7 +65,12 @@ const planSchema = new Schema(
           },
         ],
       },
-    ],
+    ],,
+
+    privacy: {
+      type: String,
+      enum: ["public", "private"],
+    }
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

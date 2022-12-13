@@ -142,7 +142,8 @@ const planSchema = new Schema(
   {
     timestamps: true,
   }
-);```
+);
+```
 
 
 ## API Reference

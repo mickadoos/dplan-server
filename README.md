@@ -1,21 +1,28 @@
-# DPlan-back
-Developed by the Olympus Team.
-## About
-Simplify the way you plan your plans with your friends.
-## Deployment
-You can check the app fully deployed [here]. If you wish to view the API deployment instead, check [here].
+# DPlan - Backend
 
-## Work structure
-I developed this project alone and used Trello to organize my workflow.
+Developed as the final project of our web development bootcamp at Ironhack Barcelona, this is Yabel, Eloi and Josep’s MERN Stack application. Check the frontend repository [here](https://github.com/PmplCode/DPlan-front).
+
+## About
+
+DPlan is a Full Stack application meant to help users plannify their private events such as parties or social meetings in a simple way. 
+Create, share, experience and organize events quickly, easily and fun.
+
+## Deployment
+
+You can check the app fully deployed [here]( https://famous-brioche-240d75.netlify.app).
+
+
 ## Installation guide
+
 - Fork this repo
-- Clone this repo 
+- Clone this repo
 
 ```shell
-$ cd portfolio-front
+$ cd DPlan-back
 $ npm install
 $ npm start
-```
+
+
 ## Models
 #### User.model.js
 ```js
@@ -40,42 +47,45 @@ const userSchema = new Schema(
       type: String,
       // required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     birthdate: {
       type: Date,
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"]
+      enum: ["male", "female", "other"],
     },
     profileImage: {
       type: String,
     },
     phoneNumber: {
-      type: String
+      type: String,
     },
     country: {
-      type: String
+      type: String,
     },
 
-    // Arrays Party Fiesta
+    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendsRequested: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendsToAccept: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
-    //Friends
-    friends: [{type: Schema.Types.ObjectId, ref: "User"}],
-    friendsRequested: [{type: Schema.Types.ObjectId, ref: "User"}],
-    friendsToAccept: [{type: Schema.Types.ObjectId, ref: "User"}],
-
-    //Plans
-    plans: [{type: Schema.Types.ObjectId, ref: "Plan", status: {enum: ["confirmed", "declined", "pending", "admin"]}}]
+    plans: [
+      {
+        _id: { type: Schema.Types.ObjectId, ref: "Plan" },
+        status: {
+          type: String,
+          enum: ["confirmed", "declined", "pending", "admin"],
+        }
+      }
+    ],
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
-
 ```
+
 #### Plan.model.js
 ```js
 const planSchema = new Schema(
@@ -88,74 +98,88 @@ const planSchema = new Schema(
         type: String,
         required: true
     },
-    image : {
+    planImage : {
         type: String,
-        default: "https://picsum.photos/300"
+        // default: "https://picsum.photos/300"
     },
     date: {
         type: String,
-        required: true
+        // required: true
     },
     time: {
         type: String,
-        required: true
+        // required: true
     },
     location: {
         type: String,
-        required: true
+        // required: true
     },
     tags: [{type: String}],
+    
+    isAdmin : {
+      type: String
+    },
 
-    // Arrays Party Fiesta
-    invited: [[{type: Schema.Types.ObjectId, ref: "User"}]],
-    accepted: [[{type: Schema.Types.ObjectId, ref: "User"}]],
-    denied: [[{type: Schema.Types.ObjectId, ref: "User"}]],
+    musicList: {
+      type: String,
+      // required: true
+    },
 
+    photoCloud: {
+      type: String,
+      // required: true
+    },
+
+    interestingLinks: {
+      type: String,
+      // required: true
+    },
+
+    invited: [{type: Schema.Types.ObjectId, ref: "User"}],
+    accepted: [{type: Schema.Types.ObjectId, ref: "User"}],
+    declined: [{type: Schema.Types.ObjectId, ref: "User"}]
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
-);
-```
-## User roles
-| Role  | Capabilities                                                                                                                             | Property       |
-| :---: | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
-| User  | Can login/logout. Can read all the projects. Can create a new order.                                                                       | isAdmin: false |
-| Admin | Can login/logout. Can read, edit or delete all the projects. Can create a new project. Can read all user's orders and edit or delete them. | isAdmin: true  |
+);```
+
+
 ## API Reference
 
-| Method |	Endpoint |	Require|	Response (200)|	Action|
-| ------ | ------ |  ------ |  ------ |  ------ |
-|POST|	/auth/signup|	|user.create|	Sign Up|
-|POST	|/auth/login|	|authToken|	Login|
-|GET|	/users/:username|	|OBJCT --> User.populate("plans")	|Find ALL plans of the user|
-|POST|	/plans/newPlan|	|plan.create|	Create new plan|
-|GET	|/plans/:planId|	|OBJCT --> Plan|	Find ONE plan of the user|
-|POST	|/plans/:planId/:username/accept|	|:username.findOneAndUpdate // yes->status=confirmed	|Accept invitation to a plan|
-|POST|	/plans/:planId/:username/decline|	|:username.findOneAndUpdate // no->status=declined|	Decline invitation to a plan|
-|POST|	/plans/:planId/accept|	|:username.findOneAndUpdate // yes->status=confirmed & no->status=declined	|Accept or not invitation to a plan|
-|PUT|	/plans/:planId|	|OBJCT --> Plan (edited)	|Edit plan|
-|GET|	/plans/:planId/invite|	||	View friends ti invite to a plan|
-|POST|	/plans/:planId/invite	|	|| Invite friends to a plan|
-|GET|	/plans/:planId/guests|	|OBJCT --> User.populate("invited","accepted","denied")|	List of ALL guests invited to a plan |
-|GET|	/:username/profile|	|OBJCT --> User.populate(friendsToAccept)	|User info for profile|
-|PUT|	/:username/edit|	|OBJCT --> User (edited)|	Edit user info|
-|GET|	/:username/friends|	|OBJCT --> User.populate(friends)|	User friends|
-|GET|	/:username/addFriends|	|ARRAY OBJCTS [.find(!friends)]	|Show all Dplan users (except friends)|
-|POST|	/:username/friendRequest/:idPerson|	|:username.findOneAndUpdate // friendsRequested.push(:idPerson)	|Send friend request|
-|		| | |:idPerson.findOneAndUpdate // friendsToAccept.push(:username)| |	
-|POST|	/:username/acceptFriend/:idPerson|	|:username.findOneAndUpdate // friends.push(:idPerson) & friendsToAccept.pop(:idPerson)|	Accept friend requests|
-|		| | |:idPerson.findOneAndUpdate // friends.push(:username) & friendsRequested.pop(:username)|	|
-|POST|	/:username/denyFriend/:idPerson|	|:username.findOneAndUpdate // friendsToAccept.pop(:idPerson)|	Deny friend requests|
-|		| | |:idPerson.findOneAndUpdate // friendsRequested.pop(:username)| |	
-|POST	|/:username/acceptFriend/:idPerson|	|:username.findOneAndUpdate // friends.push(:idPerson) & friendsToAccept.pop(:idPerson)|	Accept friend requests|
-|		|	| |:idPerson.findOneAndUpdate // friends.push(:username) & friendsRequested.pop(:username)| |
-|POST	|/:username/declineFriend/:idPerson|	|:username.findOneAndUpdate // friendsToAccept.pop(:idPerson)|	|Decline friend requests|
-|		|	| |:idPerson.findOneAndUpdate // friendsRequested.pop(:username)| |
+| METHOD | ENDPOINT  | RESPONSE(200)| ACTION |
+| :------------ |:---------------:| -----:|-----:|
+| POST   | /auth/login | res.status(200).json({ authToken: authToken })| Send the token as the response.|
+| POST   | /auth/signup | res.status(201).json({ user: user }) |Creates a new user in the database. |
+| GET    | /auth/verify |    res.status(200).json(req.payload); | Send back the token payload object containing the user data. |
+| POST   | /:username/newPlan | res.json(resp)| Create a new plan. |
+| GET    | /:planId      | res.json(result) | View plan details. |
+| PUT    | /:planId     | res.json(result) | Edit the plan. |
+| DELETE | /:planId | res.json("Plan deleted succesfully!")) | Delete the plan. |
+| GET    | /:planId/guests | res.json(result) | View people invited to the plan. |
+| GET    | /:planId/:username/invite | res.json(result) | View people user can invite to the plan. |
+| POST   | /:planId/:username/invite | res.json(resp) | Invite people to the plan. |
+| POST   | /:planId/:username/accept      | res.json(resp) | Accept invitation to the plan. |
+| POST   | /:planId/:username/decline | res.json(resp) | Decline invitation to the plan. |
+| GET    | /:username | res.json(result) | View current user plans. |
+| GET    | /:username/profile | res.json(result) | View :username profile |
+| PUT    | /:username/edit | res.json(authToken) | Edit current user profile. |
+| GET    | /:username/friends | res.json(result) | View :username friends. |
+| GET    | /:username/addFriends | res.json(result) | View users in the app you can request friendship to. |
+| POST   | /:username/friendRequest/:idPerson | res.json(resp) | Request friendship. |
+| POST   | /:username/acceptFriend/:idPerson | res.json(resp) | Accept friendship. |
+| POST   | /:username/declineFriend/:idPerson | res.json(resp) | Decline friendship. |
 
 
 
+---
 
-Welcome to the Olympus.
+Any doubts? Contact us!
 
+<br>
+<img width="20px" src="https://simpleicons.now.sh/linkedin/495f7e" alt="LinkedIn" />
+</br>
+
+<a href="https://www.linkedin.com/in/josepbp/">Josep</a>
+<a href="https://www.linkedin.com/in/eloipampliegajose/">Eloi</a>
+<a href=" http://www.linkedin.com/in/yabel-rodriguez">Yabel</a>

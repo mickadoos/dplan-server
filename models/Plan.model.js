@@ -12,41 +12,34 @@ const planSchema = new Schema(
     },
     planImage: {
       type: String,
-      // default: "https://picsum.photos/300"
     },
     date: {
       type: String,
-      // required: true
     },
     time: {
       type: String,
-      // required: true
     },
     location: {
       type: String,
-      // required: true
     },
-    latitud: {type: Number},
-    longitud: {type: Number},
-    tags: [{type: String}],
-    
-    isAdmin : {
-      type: String
+    latitud: { type: Number },
+    longitud: { type: Number },
+    tags: [{ type: String }],
+
+    isAdmin: {
+      type: String,
     },
 
     musicList: {
       type: String,
-      // required: true
     },
 
     photoCloud: {
       type: String,
-      // required: true
     },
 
     interestingLinks: {
       type: String,
-      // required: true
     },
 
     // Arrays Party Fiesta
@@ -69,7 +62,7 @@ const planSchema = new Schema(
     privacy: {
       type: String,
       enum: ["public", "private"],
-    }
+    },
   },
   {
     timestamps: true,

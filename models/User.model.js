@@ -15,11 +15,9 @@ const userSchema = new Schema(
     },
     name: {
       type: String,
-      // required: [true, "Name is required."],
     },
     username: {
       type: String,
-      // required: true,
       unique: true,
       trim: true,
     },
@@ -50,8 +48,8 @@ const userSchema = new Schema(
         status: {
           type: String,
           enum: ["confirmed", "declined", "pending", "admin"],
-        }
-      }
+        },
+      },
     ],
   },
   {

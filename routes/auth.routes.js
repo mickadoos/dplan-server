@@ -183,11 +183,11 @@ router.post("/login", (req, res, next) => {
         };
 
         // Create a JSON Web Token and sign it
-        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET ? process.env.TOKEN_SECRET : "token-secret" , {
           algorithm: "HS256",
           expiresIn: "24h",
         });
-
+        console.log("authToken >>>", authToken)
         // Send the token as the response
         res.status(200).json({ authToken: authToken });
       } else {
@@ -198,7 +198,9 @@ router.post("/login", (req, res, next) => {
 });
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
-router.get("/verify", isAuthenticated, (req, res, next) => {
+// router.get("/verify", (req, res, next) => {
+  router.get("/verify", isAuthenticated, (req, res, next) => {
+console.log("------------------------ Im here in GET verify")
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and is made available on `req.payload`
   // console.log(`req.payload`, req.payload);

@@ -76,7 +76,7 @@ router.put(
           profileImage,
         };
 
-        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET ? process.env.TOKEN_SECRET  : "token-secret", {
           algorithm: "HS256",
           expiresIn: "24h",
         });
